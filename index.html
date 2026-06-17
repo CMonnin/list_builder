@@ -215,6 +215,16 @@
     cursor: pointer;
   }
   .clear-btn:hover { background: var(--red); color: #fff; }
+  .export-btn {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+  .export-btn:hover { background: var(--accent); color: #111; }
   .army-item {
     background: var(--card);
     border: 1px solid var(--border);
@@ -320,6 +330,7 @@
     <div class="panel-section">
       <div class="army-list-header">
         <h2>Army List</h2>
+        <button class="export-btn" id="export-btn" style="display:none;">Export</button>
         <button class="clear-btn" id="clear-btn" style="display:none;">Clear All</button>
       </div>
       <div id="army-list">
@@ -343,6 +354,7 @@
   const enhancementsSection = document.getElementById('enhancements-section');
   const enhancementsList = document.getElementById('enhancements-list');
   const armyListEl = document.getElementById('army-list');
+  const exportBtn = document.getElementById('export-btn');
   const emptyState = document.getElementById('empty-state');
   const pointsDisplay = document.getElementById('points-display');
   const targetSelect = document.getElementById('target-select');
@@ -515,6 +527,7 @@
 
     // Clear button visibility
     clearBtn.style.display = armyList.length > 0 ? 'inline-block' : 'none';
+    exportBtn.style.display = armyList.length > 0 ? 'inline-block' : 'none';
 
     // Render items
     armyListEl.innerHTML = '';
@@ -624,6 +637,36 @@
       armyList = [];
       renderArmyList();
     }
+  });
+
+  // Export
+  exportBtn.addEventListener('click', function() {
+    var faction = factionSelect.options[factionSelect.selectedIndex].text;
+    var total = totalPoints();
+    var lines = [faction + ' — ' + total + ' pts', ''];
+
+    var dsItems = armyList.filter(function(i) { return i.type === 'datasheet'; });
+    var enhItems = armyList.filter(function(i) { return i.type === 'enhancement'; });
+
+    if (dsItems.length > 0) {
+      lines.push('DATASHEETS');
+      dsItems.forEach(function(item) {
+        lines.push(item.name + ' (' + item.models + (item.models === 1 ? ' model' : ' models') + ') — ' + item.points + ' pts');
+      });
+    }
+
+    if (enhItems.length > 0) {
+      if (dsItems.length > 0) lines.push('');
+      lines.push('ENHANCEMENTS');
+      enhItems.forEach(function(item) {
+        lines.push(item.name + ' [' + item.detachment + '] — ' + item.points + ' pts');
+      });
+    }
+
+    navigator.clipboard.writeText(lines.join('\n')).then(function() {
+      exportBtn.textContent = 'Copied!';
+      setTimeout(function() { exportBtn.textContent = 'Export'; }, 1500);
+    });
   });
 
   // Init
