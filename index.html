@@ -352,7 +352,7 @@
   // Load data
   async function loadData() {
     try {
-      const res = await fetch('points.json');
+      const res = await fetch('points.json?v=' + Date.now());
       if (!res.ok) throw new Error('Failed to load points.json (' + res.status + ')');
       DATA = await res.json();
       lastUpdated.textContent = 'Updated: ' + DATA.lastUpdated;
