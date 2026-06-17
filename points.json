@@ -1,0 +1,140 @@
+{
+  "lastUpdated": "2026-06-17",
+  "factions": {
+    "Adepta Sororitas": {
+      "datasheets": {
+        "Arco-flagellants": {
+          "options": [
+            { "models": 3, "points": 45 },
+            { "models": 10, "points": 140 }
+          ]
+        },
+        "Battle Sisters Squad": {
+          "options": [
+            { "models": 10, "points": 105 }
+          ]
+        },
+        "Canoness": {
+          "options": [
+            { "models": 1, "points": 60 }
+          ]
+        },
+        "Dominion Sisters": {
+          "options": [
+            { "models": 5, "points": 60 }
+          ]
+        },
+        "Mystic Shield Sisters": {
+          "options": [
+            { "models": 5, "points": 70 }
+          ]
+        }
+      },
+      "enhancements": {
+        "Army of Faith": {
+          "Blade of Saint Ellynor": 15,
+          "Divine Aspect": 5,
+          "Litanies of Faith": 10,
+          "Triptych of the Macharian Crusade": 20
+        },
+        "Bringers of Flame": {
+          "Fire and Fury": 30,
+          "Iron Surplice of Saint Istalela": 10,
+          "Manual of Saint Griselda": 20,
+          "Righteous Rage": 15
+        }
+      }
+    },
+    "Adeptus Astartes": {
+      "datasheets": {
+        "Assault Intercessors": {
+          "options": [
+            { "models": 5, "points": 65 },
+            { "models": 10, "points": 120 }
+          ]
+        },
+        "Chapter Commander": {
+          "options": [
+            { "models": 1, "points": 65 }
+          ]
+        },
+        "Devastators": {
+          "options": [
+            { "models": 5, "points": 65 }
+          ]
+        },
+        "Heavy Support": {
+          "options": [
+            { "models": 3, "points": 80 }
+          ]
+        },
+        "Space Marine Terminator Squad": {
+          "options": [
+            { "models": 3, "points": 100 }
+          ]
+        }
+      },
+      "enhancements": {
+        "Dark Angels": {
+          "Angelus": 15,
+          "Brotherhood of the Sword": 10,
+          "Hawkmoon": 10,
+          "Oath of the Blooded": 5
+        },
+        "Deathwing": {
+          "Black Talon": 15,
+          "Fell Claw": 10,
+          "Sword of the Emperor": 5
+        }
+      }
+    },
+    "Aeldari": {
+      "datasheets": {
+        "Asurans": {
+          "options": [
+            { "models": 5, "points": 55 }
+          ]
+        },
+        "Dire Avengers": {
+          "options": [
+            { "models": 5, "points": 65 }
+          ]
+        },
+        "Fire Warriors": {
+          "options": [
+            { "models": 10, "points": 120 }
+          ]
+        },
+        "Ynnead's Chosen": {
+          "options": [
+            { "models": 5, "points": 80 }
+          ]
+        },
+        "Ynari": {
+          "options": [
+            { "models": 1, "points": 50 }
+          ]
+        }
+      }
+    },
+    "Ogryns": {
+      "datasheets": {
+        "Ogryn Boyz": {
+          "options": [
+            { "models": 10, "points": 115 }
+          ]
+        },
+        "Ogryn Warboss": {
+          "options": [
+            { "models": 1, "points": 70 }
+          ]
+        },
+        "Stunty Boyz": {
+          "options": [
+            { "models": 5, "points": 45 }
+          ]
+        }
+      }
+    }
+  }
+}
