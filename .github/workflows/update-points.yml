@@ -2,10 +2,8 @@ name: Update Points Data
 
 on:
   workflow_dispatch:
-    inputs:
-      pdf_url:
-        description: "URL to the GW Munitorum Field Manual PDF"
-        required: true
+  schedule:
+    - cron: "0 8 * * 1"
 
 permissions:
   contents: write
@@ -22,21 +20,10 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install uv
-        run: pip install uv
-
-      - name: venv
-        run: uv venv
-
-      - name: Install dependencies
-        run: uv pip install -r requirements.txt
-
       - name: Run extraction script
-        env:
-          PDF_URL: ${{ inputs.pdf_url }}
         run: |
-          uv run python scripts/update_points.py \
-            --url "$PDF_URL" \
+          python scripts/build_points.py \
+            --reference points.json \
             --output points.json
 
       - name: Commit and push if changed

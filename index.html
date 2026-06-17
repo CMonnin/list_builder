@@ -423,7 +423,9 @@
     var query = datasheetSearch.value.toLowerCase();
     var sorted = Object.keys(ds).sort();
     if (query) sorted = sorted.filter(function(k) { return k.toLowerCase().includes(query); });
+    sorted = sorted.filter(function(k) { return ds[k].options && ds[k].options.length > 0; });
 
+    datasheetsSection.querySelector('h2').textContent = 'Datasheets (' + sorted.length + ')';
     datasheetsList.innerHTML = '';
     sorted.forEach(function(name) {
       var options = ds[name].options;
