@@ -1,48 +1,50 @@
 #!/usr/bin/env python3
 """
 build_points.py — Download every Warhammer 40,000 faction from the live
-Munitorum Field Manual (mfm.warhammer-community.com) and emit a points.json
-matching the CMonnin/list_builder schema:
+Munitorum Field Manual (mfm.warhammer-community.com) and emit a points.json.
 
+Schema:
 {
   "lastUpdated": "YYYY-MM-DD",
   "factions": {
     "<Faction Name>": {
-      "datasheets":   { "<Unit Name>": { "options": [ {"models": int, "points": int}, ... ] } },
+      "datasheets": {
+        "<Unit Name>": {
+          "tiers": [
+            {"label": null|"1st to 2nd"|..., "options": [{"models": int, "points": int}, ...]},
+            ...
+          ],
+          "wargear": [{"name": str, "points": int}, ...]
+        }
+      },
       "enhancements": { "<Detachment Name>": { "<Enhancement Name>": int, ... } }
     }
   }
 }
 
-Unit/detachment names arrive ALL-CAPS in the site's RSC payload, while the target
-schema uses Games Workshop's idiosyncratic casing ("Arco-flagellants",
-"Brother-Captain"). That casing can't be reproduced by rule, so we use an existing
-points.json as a casing dictionary (--reference) and fall back to a heuristic
-title-case (and warn) for any unit the reference doesn't contain.
-
 Usage:
     python build_points.py --reference points.json --output points.json
-    python build_points.py --reference points.json --local-dir ./rsc_txt   # parse saved .txt files instead of downloading
+    python build_points.py --reference points.json --local-dir ./rsc_txt
 """
 import re, json, sys, gzip, argparse, datetime, time, urllib.request, urllib.error, pathlib
 
 BASE = "https://mfm.warhammer-community.com/en"
 
-# slug -> exact faction display name (must match the reference schema's keys).
-# If a faction 404s, fix its slug here (grab the real slug from the site's nav).
 FACTIONS = {
     "adepta-sororitas":    "Adepta Sororitas",
     "adeptus-custodes":    "Adeptus Custodes",
     "adeptus-mechanicus":  "Adeptus Mechanicus",
     "aeldari":             "Aeldari",
     "astra-militarum":     "Astra Militarum",
+    "blood-angels":        "Blood Angels",
     "chaos-daemons":       "Chaos Daemons",
     "chaos-knights":       "Chaos Knights",
     "chaos-space-marines": "Chaos Space Marines",
+    "dark-angels":         "Dark Angels",
     "death-guard":         "Death Guard",
     "deathwatch":          "Deathwatch",
     "drukhari":            "Drukhari",
-    "emperors-children":   "Emperor\u2019s Children",
+    "emperors-children":   "Emperor’s Children",
     "genestealer-cults":   "Genestealer Cults",
     "grey-knights":        "Grey Knights",
     "imperial-agents":     "Imperial Agents",
@@ -52,16 +54,20 @@ FACTIONS = {
     "orks":                "Orks",
     "space-marines":       "Space Marines",
     "space-wolves":        "Space Wolves",
-    "tau-empire":          "T\u2019au Empire",
+    "black-templars":      "Black Templars",
+    "tau-empire":          "T’au Empire",
     "thousand-sons":       "Thousand Sons",
     "tyranids":            "Tyranids",
     "world-eaters":        "World Eaters",
 }
 
-# ---- RSC payload regexes (validated against the live Adepta Sororitas page) ----
+# ---- RSC payload regexes ----
 RE_PTS_DEF  = re.compile(r'^([0-9a-f]+):\["\$","span",null,\{"children":"(\d+) pts"\}\]', re.M)
 RE_UNIT     = re.compile(r'bg-slate-500 dark:bg-slate-800 font-bold text-xl text-white","children":"([^"]+)"')
-RE_COST     = re.compile(r'\[false,"([^"]+)"\]\}\],"\$L([0-9a-f]+)"')
+RE_TIER     = re.compile(r'font-bold text-black dark:text-white","children":"(YOUR [^"]+)"')
+RE_COST     = re.compile(r'\[(?:false|"\$undefined"),"([^"]+)"\]\}\],"\$L([0-9a-f]+)"')
+RE_WARGEAR_SEC = re.compile(r'"children":"WARGEAR OPTIONS"')
+RE_WARGEAR_ENT = re.compile(r'"children":"(per [^"]+)"\}\],"\$L([0-9a-f]+)"')
 RE_DETACH   = re.compile(r'"className":"text-xl break-all","children":"([^"]+)"')
 RE_ENH      = re.compile(r'"children":"([^"]+)"\}\],"\$L([0-9a-f]+)"')
 
@@ -70,7 +76,6 @@ SMALL = {"of", "the", "and", "with", "to", "for", "in", "on", "or", "a", "an",
 
 
 def title_case(name):
-    """Heuristic fallback for names not found in the reference dictionary."""
     words = name.split(" ")
     out = []
     for i, w in enumerate(words):
@@ -79,22 +84,67 @@ def title_case(name):
     return " ".join(out)
 
 
+def parse_tier_label(header):
+    """Convert tier header text to a compact label, or None for flat pricing."""
+    if header == "YOUR UNIT COSTS":
+        return None
+    label = re.sub(r'^YOUR\s+', '', header)
+    label = re.sub(r'\s+UNITS?\s+COSTS?$', '', label)
+    return label.lower()
+
+
 def parse_payload(text):
-    """Return {'units': [(NAME, [(models_int, pts_int)..])], 'detachments': [(NAME, [(enh, pts)..])]}."""
+    """Extract units (with tiers + wargear) and detachment enhancements."""
     ref_pts = {m.group(1): int(m.group(2)) for m in RE_PTS_DEF.finditer(text)}
 
     units = []
     um = list(RE_UNIT.finditer(text))
     for i, m in enumerate(um):
-        block = text[m.end(): um[i + 1].start() if i + 1 < len(um) else len(text)]
-        opts = []
-        for c in RE_COST.finditer(block):
-            ref = c.group(2)
+        block_start = m.end()
+        block_end = um[i + 1].start() if i + 1 < len(um) else len(text)
+        block = text[block_start:block_end]
+
+        wargear_pos = RE_WARGEAR_SEC.search(block)
+        unit_block = block[:wargear_pos.start()] if wargear_pos else block
+        wargear_block = block[wargear_pos.start():] if wargear_pos else ""
+
+        # Parse tiers
+        tier_matches = list(RE_TIER.finditer(unit_block))
+        tiers = []
+        if tier_matches:
+            for ti, tm in enumerate(tier_matches):
+                tier_start = tm.end()
+                tier_end = tier_matches[ti + 1].start() if ti + 1 < len(tier_matches) else len(unit_block)
+                tier_block = unit_block[tier_start:tier_end]
+                label = parse_tier_label(tm.group(1))
+                opts = []
+                for c in RE_COST.finditer(tier_block):
+                    ref = c.group(2)
+                    if ref in ref_pts:
+                        mc = re.match(r"(\d+)", c.group(1))
+                        if mc:
+                            opts.append({"models": int(mc.group(1)), "points": ref_pts[ref]})
+                tiers.append({"label": label, "options": opts})
+        else:
+            opts = []
+            for c in RE_COST.finditer(unit_block):
+                ref = c.group(2)
+                if ref in ref_pts:
+                    mc = re.match(r"(\d+)", c.group(1))
+                    if mc:
+                        opts.append({"models": int(mc.group(1)), "points": ref_pts[ref]})
+            if opts:
+                tiers.append({"label": None, "options": opts})
+
+        # Parse wargear
+        wargear = []
+        for w in RE_WARGEAR_ENT.finditer(wargear_block):
+            ref = w.group(2)
             if ref in ref_pts:
-                mc = re.match(r"(\d+)", c.group(1))
-                if mc:
-                    opts.append((int(mc.group(1)), ref_pts[ref]))
-        units.append((m.group(1), opts))
+                name = re.sub(r'^per\s+', '', w.group(1))
+                wargear.append({"name": name, "points": ref_pts[ref]})
+
+        units.append((m.group(1), tiers, wargear))
 
     detach = []
     dm = list(RE_DETACH.finditer(text))
@@ -130,7 +180,7 @@ def fetch(slug, retries=3):
     req = urllib.request.Request(url, headers={
         "RSC": "1",
         "User-Agent": "Mozilla/5.0",
-        "Accept-Encoding": "gzip",          # avoid brotli; stdlib has no decoder
+        "Accept-Encoding": "gzip",
     })
     last = None
     for attempt in range(retries):
@@ -144,7 +194,7 @@ def fetch(slug, retries=3):
             if e.code == 404:
                 raise
             last = e
-        except Exception as e:                # noqa
+        except Exception as e:
             last = e
         time.sleep(1.5 * (attempt + 1))
     raise last
@@ -156,12 +206,12 @@ def build_faction(fname, payload, refs):
     warnings = []
 
     datasheets = {}
-    for raw_name, opts in payload["units"]:
+    for raw_name, tiers, wargear in payload["units"]:
         canon = dmap.get(raw_name.upper()) or ds_g.get(raw_name.upper())
         if not canon:
             canon = title_case(raw_name)
             warnings.append(f"  [new datasheet] {fname}: '{raw_name}' -> '{canon}'")
-        datasheets[canon] = {"options": [{"models": m, "points": p} for m, p in opts]}
+        datasheets[canon] = {"tiers": tiers, "wargear": wargear}
 
     enhancements = {}
     for raw_det, enh in payload["detachments"]:
@@ -169,7 +219,6 @@ def build_faction(fname, payload, refs):
         if not canon:
             canon = title_case(raw_det)
             warnings.append(f"  [new detachment] {fname}: '{raw_det}' -> '{canon}'")
-        # enhancement names already arrive in proper case from the RSC payload
         enhancements[canon] = {ename: pts for ename, pts in enh}
 
     return {"datasheets": datasheets, "enhancements": enhancements}, warnings
@@ -201,7 +250,7 @@ def main():
         except FileNotFoundError:
             print(f"SKIP {slug}: no local file {slug}.txt", file=sys.stderr)
             continue
-        except Exception as e:                # noqa
+        except Exception as e:
             print(f"SKIP {slug}: {e}", file=sys.stderr)
             continue
 

@@ -136,21 +136,33 @@
     border-radius: 6px;
     padding: 10px 12px;
     margin-bottom: 6px;
-    cursor: pointer;
     transition: background 0.15s;
+  }
+  .datasheet-item:hover { background: var(--card-hover); }
+  .datasheet-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-  .datasheet-item:hover { background: var(--card-hover); }
   .datasheet-name {
     font-weight: 600;
     font-size: 0.9rem;
+  }
+  .datasheet-tier-label {
+    font-size: 0.7rem;
+    color: var(--accent);
+    margin-left: 8px;
+    font-weight: 400;
   }
   .datasheet-options {
     display: flex;
     gap: 8px;
     align-items: center;
+  }
+  .datasheet-wargear {
+    margin-top: 6px;
+    font-size: 0.75rem;
+    color: var(--text-dim);
   }
   .option-btn {
     background: var(--bg3);
@@ -231,13 +243,15 @@
     border-radius: 6px;
     padding: 8px 12px;
     margin-bottom: 4px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     font-size: 0.85rem;
   }
   .army-item.enhancement {
     border-left: 3px solid var(--accent);
+  }
+  .army-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   .army-item-name { font-weight: 500; }
   .army-item-detail { color: var(--text-dim); font-size: 0.8rem; margin-left: 8px; }
@@ -252,6 +266,41 @@
     padding: 0 4px;
   }
   .remove-btn:hover { color: #ff6b6b; }
+  .wargear-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
+  }
+  .wargear-control {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+  .wargear-btn {
+    background: var(--bg3);
+    color: var(--text);
+    border: none;
+    border-radius: 3px;
+    width: 20px;
+    height: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .wargear-btn:hover { background: var(--accent); color: #111; }
+  .wargear-qty {
+    min-width: 14px;
+    text-align: center;
+    font-weight: 700;
+    color: var(--text);
+  }
   .empty-state {
     text-align: center;
     color: var(--text-dim);
@@ -342,29 +391,26 @@
 
 <script>
 (function() {
-  let DATA = null;
-  let currentFaction = null;
-  let armyList = []; // { type: 'datasheet'|'enhancement', name, models, points }
+  var DATA = null;
+  var currentFaction = null;
+  var armyList = [];
 
-  // DOM refs
-  const factionSelect = document.getElementById('faction-select');
-  const datasheetSearch = document.getElementById('datasheet-search');
-  const datasheetsList = document.getElementById('datasheets-list');
-  const datasheetsSection = document.getElementById('datasheets-section');
-  const enhancementsSection = document.getElementById('enhancements-section');
-  const enhancementsList = document.getElementById('enhancements-list');
-  const armyListEl = document.getElementById('army-list');
-  const exportBtn = document.getElementById('export-btn');
-  const emptyState = document.getElementById('empty-state');
-  const pointsDisplay = document.getElementById('points-display');
-  const targetSelect = document.getElementById('target-select');
-  const lastUpdated = document.getElementById('last-updated');
-  const clearBtn = document.getElementById('clear-btn');
+  var factionSelect = document.getElementById('faction-select');
+  var datasheetSearch = document.getElementById('datasheet-search');
+  var datasheetsList = document.getElementById('datasheets-list');
+  var datasheetsSection = document.getElementById('datasheets-section');
+  var enhancementsSection = document.getElementById('enhancements-section');
+  var enhancementsList = document.getElementById('enhancements-list');
+  var armyListEl = document.getElementById('army-list');
+  var exportBtn = document.getElementById('export-btn');
+  var pointsDisplay = document.getElementById('points-display');
+  var targetSelect = document.getElementById('target-select');
+  var lastUpdated = document.getElementById('last-updated');
+  var clearBtn = document.getElementById('clear-btn');
 
-  // Load data
   async function loadData() {
     try {
-      const res = await fetch('points.json?v=' + Date.now());
+      var res = await fetch('points.json?v=' + Date.now());
       if (!res.ok) throw new Error('Failed to load points.json (' + res.status + ')');
       DATA = await res.json();
       lastUpdated.textContent = 'Updated: ' + DATA.lastUpdated;
@@ -375,9 +421,8 @@
     }
   }
 
-  // Populate faction dropdown
   function populateFactions() {
-    const factions = Object.keys(DATA.factions).sort();
+    var factions = Object.keys(DATA.factions).sort();
     factionSelect.innerHTML = '<option value="">— Select a faction —</option>';
     factions.forEach(function(f) {
       var opt = document.createElement('option');
@@ -387,7 +432,6 @@
     });
   }
 
-  // Faction change
   factionSelect.addEventListener('change', function() {
     var faction = this.value;
     if (!faction) {
@@ -395,7 +439,6 @@
       enhancementsSection.style.display = 'none';
       return;
     }
-    // If switching factions and army has items, confirm
     if (currentFaction && armyList.length > 0) {
       if (!confirm('Switching factions will clear your current army list. Continue?')) {
         factionSelect.value = currentFaction;
@@ -404,66 +447,117 @@
     }
     currentFaction = faction;
     armyList = [];
-    renderArmyList();
-    renderDatasheets(faction);
-    renderEnhancements(faction);
-    datasheetsSection.style.display = 'block';
-    enhancementsSection.style.display = DATA.factions[faction].enhancements ? 'block' : 'none';
+    renderAll();
   });
 
-  // Datasheet search
   datasheetSearch.addEventListener('input', function() {
     if (currentFaction) renderDatasheets(currentFaction);
   });
 
-  // Render datasheets
+  function countUnit(name) {
+    return armyList.filter(function(i) { return i.type === 'datasheet' && i.name === name; }).length;
+  }
+
+  function getActiveTier(dsData, unitCount) {
+    var tiers = dsData.tiers || [];
+    if (tiers.length <= 1) return tiers[0] || null;
+    var thresholds = parseTierThresholds(tiers);
+    for (var i = thresholds.length - 1; i >= 0; i--) {
+      if (unitCount >= thresholds[i]) return tiers[i];
+    }
+    return tiers[0];
+  }
+
+  function parseTierThresholds(tiers) {
+    return tiers.map(function(t, i) {
+      if (!t.label) return 0;
+      var m = t.label.match(/(\d+)/);
+      if (!m) return 0;
+      var n = parseInt(m[1]);
+      if (i === 0) return 0;
+      return n - 1;
+    });
+  }
+
+  function hasOptions(dsData) {
+    var tiers = dsData.tiers || [];
+    return tiers.some(function(t) { return t.options && t.options.length > 0; });
+  }
+
   function renderDatasheets(faction) {
-    var factionData = DATA.factions[faction];
-    var ds = factionData.datasheets || {};
+    var ds = (DATA.factions[faction] || {}).datasheets || {};
     var query = datasheetSearch.value.toLowerCase();
     var sorted = Object.keys(ds).sort();
     if (query) sorted = sorted.filter(function(k) { return k.toLowerCase().includes(query); });
-    sorted = sorted.filter(function(k) { return ds[k].options && ds[k].options.length > 0; });
+    sorted = sorted.filter(function(k) { return hasOptions(ds[k]); });
 
     datasheetsSection.querySelector('h2').textContent = 'Datasheets (' + sorted.length + ')';
     datasheetsList.innerHTML = '';
+
     sorted.forEach(function(name) {
-      var options = ds[name].options;
+      var dsData = ds[name];
+      var unitCount = countUnit(name);
+      var activeTier = getActiveTier(dsData, unitCount);
+      if (!activeTier) return;
+
       var div = document.createElement('div');
       div.className = 'datasheet-item';
+
+      var header = document.createElement('div');
+      header.className = 'datasheet-header';
 
       var left = document.createElement('span');
       left.className = 'datasheet-name';
       left.textContent = name;
-      div.appendChild(left);
+
+      if (dsData.tiers.length > 1 && activeTier.label) {
+        var tierLabel = document.createElement('span');
+        tierLabel.className = 'datasheet-tier-label';
+        tierLabel.textContent = activeTier.label;
+        left.appendChild(tierLabel);
+      }
+      header.appendChild(left);
 
       var right = document.createElement('span');
       right.className = 'datasheet-options';
 
-      options.forEach(function(opt) {
+      activeTier.options.forEach(function(opt) {
         var btn = document.createElement('button');
         btn.className = 'option-btn';
         btn.textContent = opt.models + ' mod. / ' + opt.points + ' pts';
         btn.addEventListener('click', function() {
-          armyList.push({ type: 'datasheet', name: name, models: opt.models, points: opt.points });
-          renderArmyList();
+          var wg = (dsData.wargear || []).map(function(w) {
+            return { name: w.name, points: w.points, qty: 0 };
+          });
+          armyList.push({
+            type: 'datasheet', name: name, models: opt.models,
+            points: opt.points, wargear: wg
+          });
+          renderAll();
         });
         right.appendChild(btn);
       });
+      header.appendChild(right);
+      div.appendChild(header);
 
-      div.appendChild(right);
+      if (dsData.wargear && dsData.wargear.length > 0) {
+        var wgInfo = document.createElement('div');
+        wgInfo.className = 'datasheet-wargear';
+        wgInfo.textContent = dsData.wargear.map(function(w) {
+          return w.name + ' +' + w.points + ' pts';
+        }).join(', ');
+        div.appendChild(wgInfo);
+      }
+
       datasheetsList.appendChild(div);
     });
   }
 
-  // Render enhancements
   function renderEnhancements(faction) {
-    var factionData = DATA.factions[faction];
-    var enh = factionData.enhancements || {};
+    var enh = (DATA.factions[faction] || {}).enhancements || {};
     enhancementsList.innerHTML = '';
 
-    var detNames = Object.keys(enh).sort();
-    detNames.forEach(function(detName) {
+    Object.keys(enh).sort().forEach(function(detName) {
       var group = document.createElement('div');
       group.className = 'enhancement-group';
 
@@ -471,8 +565,7 @@
       h3.textContent = detName;
       group.appendChild(h3);
 
-      var enhNames = Object.keys(enh[detName]).sort();
-      enhNames.forEach(function(name) {
+      Object.keys(enh[detName]).sort().forEach(function(name) {
         var pts = enh[detName][name];
         var item = document.createElement('div');
         item.className = 'enhancement-item';
@@ -496,8 +589,8 @@
         addBtn.className = 'enhancement-add';
         addBtn.textContent = '+';
         addBtn.addEventListener('click', function() {
-          armyList.push({ type: 'enhancement', name: name, detachment: detName, models: null, points: pts });
-          renderArmyList();
+          armyList.push({ type: 'enhancement', name: name, detachment: detName, points: pts });
+          renderAll();
         });
         right.appendChild(addBtn);
 
@@ -509,36 +602,37 @@
     });
   }
 
-  // Calculate total points
   function totalPoints() {
-    return armyList.reduce(function(sum, item) { return sum + item.points; }, 0);
+    return armyList.reduce(function(sum, item) {
+      var wgPts = (item.wargear || []).reduce(function(s, w) { return s + w.qty * w.points; }, 0);
+      return sum + item.points + wgPts;
+    }, 0);
   }
 
-  // Render army list
+  function itemTotal(item) {
+    var wgPts = (item.wargear || []).reduce(function(s, w) { return s + w.qty * w.points; }, 0);
+    return item.points + wgPts;
+  }
+
   function renderArmyList() {
     var total = totalPoints();
     var target = parseInt(targetSelect.value);
 
-    // Update points display
     pointsDisplay.textContent = total + ' / ' + (target || '—') + ' pts';
     pointsDisplay.className = 'points-display';
     if (target > 0) {
-      if (total > target) pointsDisplay.classList.add('over');
-      else pointsDisplay.classList.add('under');
+      pointsDisplay.classList.add(total > target ? 'over' : 'under');
     }
 
-    // Clear button visibility
     clearBtn.style.display = armyList.length > 0 ? 'inline-block' : 'none';
     exportBtn.style.display = armyList.length > 0 ? 'inline-block' : 'none';
 
-    // Render items
     armyListEl.innerHTML = '';
     if (armyList.length === 0) {
       armyListEl.innerHTML = '<div class="empty-state">Select a faction and add units to build your army.</div>';
       return;
     }
 
-    // Group: datasheets first, then enhancements
     var dsItems = armyList.filter(function(i) { return i.type === 'datasheet'; });
     var enhItems = armyList.filter(function(i) { return i.type === 'enhancement'; });
 
@@ -548,9 +642,12 @@
       label.textContent = 'Datasheets';
       armyListEl.appendChild(label);
 
-      dsItems.forEach(function(item, idx) {
+      dsItems.forEach(function(item) {
         var div = document.createElement('div');
         div.className = 'army-item';
+
+        var row = document.createElement('div');
+        row.className = 'army-item-row';
 
         var left = document.createElement('span');
         left.className = 'army-item-name';
@@ -563,25 +660,66 @@
 
         var pts = document.createElement('span');
         pts.className = 'army-item-pts';
-        pts.textContent = item.points;
+        pts.textContent = itemTotal(item);
 
         var rm = document.createElement('button');
         rm.className = 'remove-btn';
         rm.textContent = '✕';
         rm.addEventListener('click', function() {
-          // Find the first matching item in armyList and remove it
           for (var i = 0; i < armyList.length; i++) {
             if (armyList[i] === item) { armyList.splice(i, 1); break; }
           }
-          renderArmyList();
+          renderAll();
         });
 
         var right = document.createElement('span');
         right.appendChild(pts);
         right.appendChild(rm);
 
-        div.appendChild(left);
-        div.appendChild(right);
+        row.appendChild(left);
+        row.appendChild(right);
+        div.appendChild(row);
+
+        if (item.wargear && item.wargear.length > 0) {
+          var wgDiv = document.createElement('div');
+          wgDiv.className = 'wargear-controls';
+
+          item.wargear.forEach(function(wg) {
+            var ctrl = document.createElement('span');
+            ctrl.className = 'wargear-control';
+
+            var minus = document.createElement('button');
+            minus.className = 'wargear-btn';
+            minus.textContent = '−';
+            minus.addEventListener('click', function() {
+              if (wg.qty > 0) { wg.qty--; renderAll(); }
+            });
+
+            var qty = document.createElement('span');
+            qty.className = 'wargear-qty';
+            qty.textContent = wg.qty;
+
+            var plus = document.createElement('button');
+            plus.className = 'wargear-btn';
+            plus.textContent = '+';
+            plus.addEventListener('click', function() {
+              wg.qty++;
+              renderAll();
+            });
+
+            var wgLabel = document.createElement('span');
+            wgLabel.textContent = wg.name + ' (+' + wg.points + ')';
+
+            ctrl.appendChild(minus);
+            ctrl.appendChild(qty);
+            ctrl.appendChild(plus);
+            ctrl.appendChild(wgLabel);
+            wgDiv.appendChild(ctrl);
+          });
+
+          div.appendChild(wgDiv);
+        }
+
         armyListEl.appendChild(div);
       });
     }
@@ -595,6 +733,9 @@
       enhItems.forEach(function(item) {
         var div = document.createElement('div');
         div.className = 'army-item enhancement';
+
+        var row = document.createElement('div');
+        row.className = 'army-item-row';
 
         var left = document.createElement('span');
         left.className = 'army-item-name';
@@ -616,32 +757,40 @@
           for (var i = 0; i < armyList.length; i++) {
             if (armyList[i] === item) { armyList.splice(i, 1); break; }
           }
-          renderArmyList();
+          renderAll();
         });
 
         var right = document.createElement('span');
         right.appendChild(pts);
         right.appendChild(rm);
 
-        div.appendChild(left);
-        div.appendChild(right);
+        row.appendChild(left);
+        row.appendChild(right);
+        div.appendChild(row);
         armyListEl.appendChild(div);
       });
     }
   }
 
-  // Target change
+  function renderAll() {
+    renderArmyList();
+    if (currentFaction) {
+      renderDatasheets(currentFaction);
+      datasheetsSection.style.display = 'block';
+      enhancementsSection.style.display =
+        Object.keys((DATA.factions[currentFaction] || {}).enhancements || {}).length > 0 ? 'block' : 'none';
+    }
+  }
+
   targetSelect.addEventListener('change', renderArmyList);
 
-  // Clear all
   clearBtn.addEventListener('click', function() {
     if (confirm('Clear all units from your army list?')) {
       armyList = [];
-      renderArmyList();
+      renderAll();
     }
   });
 
-  // Export
   exportBtn.addEventListener('click', function() {
     var faction = factionSelect.options[factionSelect.selectedIndex].text;
     var total = totalPoints();
@@ -653,7 +802,11 @@
     if (dsItems.length > 0) {
       lines.push('DATASHEETS');
       dsItems.forEach(function(item) {
-        lines.push(item.name + ' (' + item.models + (item.models === 1 ? ' model' : ' models') + ') — ' + item.points + ' pts');
+        var base = item.name + ' (' + item.models + (item.models === 1 ? ' model' : ' models') + ') — ' + itemTotal(item) + ' pts';
+        var wgParts = (item.wargear || []).filter(function(w) { return w.qty > 0; })
+          .map(function(w) { return w.qty + 'x ' + w.name; });
+        if (wgParts.length > 0) base += ' [' + wgParts.join(', ') + ']';
+        lines.push(base);
       });
     }
 
@@ -671,7 +824,6 @@
     });
   });
 
-  // Init
   loadData();
 })();
 </script>
