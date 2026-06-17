@@ -7,17 +7,22 @@ import os
 import re
 import sys
 import tempfile
+from collections import defaultdict
 from datetime import date
 
 import pdfplumber
 import requests
 
-# Regex patterns
+# Regex patterns — dot leaders may be actual dots or U+FFFD replacement chars
+_DOTS = r'[.�\s]+'
 DATASHEET_ENTRY_RE = re.compile(
-    r'(\d+)\s*model[s]?\.{2,}\s*(\d+)\s*pts'
+    r'(\d+)\s*models?' + _DOTS + r'(\d+)\s*pts'
+)
+NAMED_ENTRY_RE = re.compile(
+    r'(\d+)\s+(.+?)' + _DOTS + r'(\d+)\s*pts'
 )
 ENHANCEMENT_ENTRY_RE = re.compile(
-    r'(.+?)\.{2,}\s*(\d+)\s*pts'
+    r'(.+?)[.�]{2,}\s*\+?(\d+)\s*pts'
 )
 FACTION_HEADER_RE = re.compile(
     r'^(CODEX|INDEX|ALPHA ANVIL|OMEGA ANVIL):\s*(.+)',
@@ -47,6 +52,67 @@ def title_case(name: str) -> str:
     return ' '.join(word.capitalize() for word in name.split())
 
 
+COL_BOUNDARIES = [0, 228, 378, 610]
+
+FULL_WIDTH_RE = re.compile(
+    r'^(CODEX|INDEX|ALPHA ANVIL|OMEGA ANVIL)\s*:', re.IGNORECASE
+)
+
+
+def extract_page_lines(page) -> list[str]:
+    """Extract text from a PDF page, splitting the fixed 2-or-3 column layout
+    into sequential lines (left column first, then middle, then right).
+
+    Column gutters in this PDF sit at approximately x=228 and x=378.
+    Faction headers span the full page width and are emitted first unsplit.
+    """
+    words = page.extract_words(keep_blank_chars=False, x_tolerance=3, y_tolerance=3)
+    if not words:
+        return []
+
+    # Group words by row first to detect full-width header rows
+    row_map: dict[int, list] = defaultdict(list)
+    for w in words:
+        row_map[round(w['top'])].append(w)
+
+    full_width_rows: set[int] = set()
+    all_lines: list[str] = []
+
+    # Emit full-width rows (faction headers) in page order first
+    for y in sorted(row_map.keys()):
+        row_words = sorted(row_map[y], key=lambda w: w['x0'])
+        line = ' '.join(w['text'] for w in row_words)
+        if FULL_WIDTH_RE.match(line):
+            all_lines.append(line)
+            full_width_rows.add(y)
+
+    # Now split remaining words into columns
+    def word_col(w):
+        x = w['x0']
+        for i in range(len(COL_BOUNDARIES) - 1):
+            if COL_BOUNDARIES[i] <= x < COL_BOUNDARIES[i + 1]:
+                return i
+        return len(COL_BOUNDARIES) - 2
+
+    col_row_map: dict[tuple[int, int], list] = defaultdict(list)
+    for w in words:
+        y = round(w['top'])
+        if y in full_width_rows:
+            continue
+        col_row_map[(word_col(w), y)].append(w)
+
+    for col_idx in range(len(COL_BOUNDARIES) - 1):
+        col_keys = sorted(
+            [k for k in col_row_map if k[0] == col_idx], key=lambda k: k[1]
+        )
+        for key in col_keys:
+            row_words = sorted(col_row_map[key], key=lambda w: w['x0'])
+            line = ' '.join(w['text'] for w in row_words)
+            all_lines.append(line)
+
+    return all_lines
+
+
 def parse_pdf(pdf_path: str) -> dict:
     """Parse the Munitorum Field Manual PDF and return structured data."""
     factions: dict = {}
@@ -54,19 +120,17 @@ def parse_pdf(pdf_path: str) -> dict:
     current_datasheet: str | None = None
     in_enhancements: bool = False
     current_detachment: str | None = None
+    pending_name: str | None = None
+    pending_models: int | None = None
 
     warnings: list[str] = []
 
     with pdfplumber.open(pdf_path) as pdf:
         for page in pdf.pages:
-            text = page.extract_text()
-            if not text:
-                continue
+            lines = extract_page_lines(page)
 
-            lines = text.strip().splitlines()
-
-            for line in lines:
-                line_s = line.strip()
+            for line_s in lines:
+                line_s = line_s.strip()
                 if not line_s:
                     continue
 
@@ -93,12 +157,11 @@ def parse_pdf(pdf_path: str) -> dict:
 
                 # --- Forge World header ---
                 if FORGE_WORLD_RE.search(line_s):
-                    # Forge World datasheets go in the same faction
                     in_enhancements = False
                     current_datasheet = None
                     continue
 
-                # --- Datasheet entry (N model(s)..........NNN pts) ---
+                # --- Datasheet entry: "N model(s)..........NNN pts" ---
                 m = DATASHEET_ENTRY_RE.match(line_s)
                 if m and current_faction and current_datasheet and not in_enhancements:
                     models = int(m.group(1))
@@ -108,52 +171,126 @@ def parse_pdf(pdf_path: str) -> dict:
                     )
                     continue
 
-                # --- Enhancement entry (Name..........NN pts) ---
+                # --- Named/mixed entry: "1 Spanner and 4 Burna Boyz ...60 pts"
+                #     or "3 Wolf Guard Headtakers ......85 pts"
+                m = NAMED_ENTRY_RE.match(line_s)
+                if m and current_faction and current_datasheet and not in_enhancements:
+                    models = int(m.group(1))
+                    points = int(m.group(3))
+                    factions[current_faction]['datasheets'][current_datasheet]['options'].append(
+                        {'models': models, 'points': points}
+                    )
+                    continue
+
+                # --- Continuation entry: "and 3 Hunting Wolves ..110 pts" ---
+                m_enh = ENHANCEMENT_ENTRY_RE.match(line_s)
+                if (m_enh and current_faction and current_datasheet
+                        and not in_enhancements and line_s.startswith('and ')):
+                    pts = int(m_enh.group(2))
+                    if pending_models is not None:
+                        factions[current_faction]['datasheets'][current_datasheet]['options'].append(
+                            {'models': pending_models, 'points': pts}
+                        )
+                        pending_models = None
+                    else:
+                        opts = factions[current_faction]['datasheets'][current_datasheet]['options']
+                        if opts:
+                            opts[-1]['points'] = pts
+                    continue
+
+                # --- Enhancement entry: "Name..........NN pts" ---
                 if in_enhancements and current_faction and current_detachment:
-                    m = ENHANCEMENT_ENTRY_RE.match(line_s)
-                    if m:
-                        name = m.group(1).strip()
-                        pts = int(m.group(2))
+                    if m_enh:
+                        name = m_enh.group(1).strip()
+                        pts = int(m_enh.group(2))
                         factions[current_faction]['enhancements'][current_detachment][name] = pts
                         continue
 
-                # --- Potential datasheet name (dark banner bar) ---
-                # Heuristic: a line that doesn't match any pattern and is followed by
-                # DATASHEET_ENTRY_RE lines. We detect this by checking if the line
-                # looks like a proper noun phrase (title-cased or all-caps, no dots).
+                if not current_faction:
+                    continue
+
+                # Skip lines that look like rule/explanatory text
+                if any(w in line_s.lower() for w in [
+                    'army faction', 'agents of the', 'points values',
+                    'imperium,', 'your army', 'doing so',
+                ]):
+                    continue
+
+                # Skip page numbers and bullet lines
+                if (re.match(r'^\d+$', line_s)
+                        or re.match(r'^[•\-–—]$', line_s)
+                        or line_s.startswith(('•', '•', '–', '—'))):
+                    continue
+
+                # --- Multi-line entry prefix: "3 Wolf Guard Headtakers" (digit-prefixed, no pts) ---
                 if (
-                    current_faction
-                    and not in_enhancements
-                    and current_datasheet is not None
+                    not in_enhancements
+                    and current_datasheet
+                    and re.match(r'^\d+\s+', line_s)
+                    and not DATASHEET_ENTRY_RE.match(line_s)
+                    and not NAMED_ENTRY_RE.match(line_s)
+                ):
+                    pending_models = int(line_s.split()[0])
+                    continue
+
+                # --- Potential datasheet name ---
+                if (
+                    not in_enhancements
                     and not DATASHEET_ENTRY_RE.match(line_s)
                     and not ENHANCEMENT_ENTRY_RE.match(line_s)
-                    and not line_s.startswith(('•', '•', '–', '—'))
+                    and not NAMED_ENTRY_RE.match(line_s)
                     and len(line_s) < 60
-                    # Must not be a number-only line or a single character
-                    and not re.match(r'^\d+$', line_s)
-                    and not re.match(r'^[•\-–—]$', line_s)
+                    and not re.match(r'^\d+\s*\d+\s*\d+', line_s)
+                    and not line_s.isupper()
                 ):
-                    # This line is between a datasheet and its entry lines,
-                    # so it's likely a new datasheet name.
-                    # Only treat it as a new datasheet if it looks like a name
-                    # (not a rule text line, not a stat line).
-                    if (
-                        not re.match(r'^\d+\s*\d+\s*\d+', line_s)  # not a stat line
-                        and ' ' in line_s  # multi-word
-                    ):
-                        current_datasheet = line_s
-                        factions[current_faction]['datasheets'][current_datasheet] = {
-                            'options': []
-                        }
+                    first_word = line_s.split()[0].lower()
+                    starts_with_prep = first_word in ('with', 'and', 'in', 'of')
 
-                # --- Detachment name (dark banner in enhancements section) ---
-                if (
+                    # Check if this is a continuation of a multi-line name
+                    if starts_with_prep:
+                        base = pending_name or current_datasheet
+                        if base:
+                            merged = f'{base} {line_s}'
+                            if pending_name:
+                                pending_name = None
+                            else:
+                                factions[current_faction]['datasheets'].pop(base, None)
+                            current_datasheet = merged
+                            factions[current_faction]['datasheets'][current_datasheet] = {
+                                'options': []
+                            }
+                            continue
+
+                    if current_datasheet:
+                        prev = current_datasheet
+                        if prev.endswith((' with', ' of', ' in', ' and', ' the', ' a')):
+                            merged = f'{prev} {line_s}'
+                            opts = factions[current_faction]['datasheets'].pop(prev, {}).get('options', [])
+                            current_datasheet = merged
+                            factions[current_faction]['datasheets'][current_datasheet] = {
+                                'options': opts
+                            }
+                            continue
+
+                    pending_name = None
+
+                    # Don't overwrite an existing datasheet that already has options
+                    existing = factions[current_faction]['datasheets'].get(line_s)
+                    if existing and existing['options']:
+                        pending_name = line_s
+                        continue
+                    current_datasheet = line_s
+                    factions[current_faction]['datasheets'][current_datasheet] = {
+                        'options': []
+                    }
+
+                # --- Detachment name ---
+                elif (
                     in_enhancements
-                    and current_faction
                     and not ENHANCEMENT_ENTRY_RE.match(line_s)
-                    and current_datasheet is None
+                    and not DATASHEET_ENTRY_RE.match(line_s)
                     and len(line_s) < 50
-                    and ' ' in line_s
+                    and not re.match(r'^\d+$', line_s)
                 ):
                     current_detachment = line_s
                     if current_detachment not in factions[current_faction]['enhancements']:
