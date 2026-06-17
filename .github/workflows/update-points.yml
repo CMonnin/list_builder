@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       pdf_url:
-        description: 'URL to the GW Munitorum Field Manual PDF'
+        description: "URL to the GW Munitorum Field Manual PDF"
         required: true
 
 jobs:
@@ -17,10 +17,13 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install uv
         run: pip install uv
+
+      - name: venv
+        run: uv venv
 
       - name: Install dependencies
         run: uv pip install -r requirements.txt
