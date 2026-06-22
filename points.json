@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-17",
+  "lastUpdated": "2026-06-22",
   "factions": {
     "Adepta Sororitas": {
       "datasheets": {
@@ -14333,7 +14333,7 @@
         },
         "Spectacle of Spite": {
           "Chronoshard": 15,
-          "MORGHENNA’S CURSE": 20,
+          "Morghenna’s Curse": 20,
           "Periapt of Torments": 25,
           "Pharmacophex": 15
         },
