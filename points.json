@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-31",
+  "lastUpdated": "2026-09-07",
   "factions": {
     "Adepta Sororitas": {
       "datasheets": {
@@ -137,7 +137,7 @@
         }
       },
       "enhancements": {
-        "Champions of Faith": {
+        "Bringers of Flame": {
           "per Meltagun": 5,
           "per Twin multi-melta": 15,
           "per Multi-melta": 5
@@ -151,6 +151,10 @@
           "wargear": []
         },
         "Aleya": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Allarus Custodians": {
           "tiers": [],
           "wargear": []
         },
@@ -254,6 +258,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Vertus Praetors": {
+          "tiers": [],
+          "wargear": []
+        },
         "Vigilators": {
           "tiers": [],
           "wargear": []
@@ -312,6 +320,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Kastelan Robots": {
+          "tiers": [],
+          "wargear": []
+        },
         "Kataphron Breachers": {
           "tiers": [],
           "wargear": []
@@ -324,11 +336,23 @@
           "tiers": [],
           "wargear": []
         },
+        "Pteraxii Skystalkers": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Pteraxii Sterylizors": {
+          "tiers": [],
+          "wargear": []
+        },
         "Serberys Raiders": {
           "tiers": [],
           "wargear": []
         },
         "Serberys Sulphurhounds": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Servitor Battleclade": {
           "tiers": [],
           "wargear": []
         },
@@ -373,6 +397,10 @@
           "wargear": []
         },
         "Technoarcheologist": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Tech-priest Dominus": {
           "tiers": [],
           "wargear": []
         },
@@ -438,11 +466,23 @@
           "tiers": [],
           "wargear": []
         },
+        "Dark Reapers": {
+          "tiers": [],
+          "wargear": []
+        },
         "D-cannon Platform": {
           "tiers": [],
           "wargear": []
         },
+        "Dire Avengers": {
+          "tiers": [],
+          "wargear": []
+        },
         "Dragon Knights": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Eldrad Ulthran": {
           "tiers": [],
           "wargear": []
         },
@@ -534,11 +574,19 @@
           "tiers": [],
           "wargear": []
         },
+        "Spiritseer": {
+          "tiers": [],
+          "wargear": []
+        },
         "Starfangs": {
           "tiers": [],
           "wargear": []
         },
         "Stonesinger": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Storm Guardians": {
           "tiers": [],
           "wargear": []
         },
@@ -558,11 +606,23 @@
           "tiers": [],
           "wargear": []
         },
+        "Warlock": {
+          "tiers": [],
+          "wargear": []
+        },
         "Warlock Conclave": {
           "tiers": [],
           "wargear": []
         },
+        "Warlock Skyrunners": {
+          "tiers": [],
+          "wargear": []
+        },
         "Warp Spiders": {
+          "tiers": [],
+          "wargear": []
+        },
+        "War Walkers": {
           "tiers": [],
           "wargear": []
         },
@@ -611,6 +671,10 @@
           "wargear": []
         },
         "Starweaver": {
+          "tiers": [],
+          "wargear": []
+        },
+        "The Visarch": {
           "tiers": [],
           "wargear": []
         },
@@ -731,7 +795,19 @@
           "tiers": [],
           "wargear": []
         },
+        "Cadian Shock Troops": {
+          "tiers": [],
+          "wargear": []
+        },
         "Catachan Command Squad": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Catachan Heavy Weapons Squad": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Catachan Jungle Fighters": {
           "tiers": [],
           "wargear": []
         },
@@ -760,6 +836,10 @@
           "wargear": []
         },
         "Cyclops Demolition Vehicle": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Death Korps of Krieg": {
           "tiers": [],
           "wargear": []
         },
@@ -808,6 +888,42 @@
           "wargear": []
         },
         "Krieg Command Squad": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Krieg Heavy Weapons Squad": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Leman Russ Battle Tank": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Leman Russ Commander": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Leman Russ Demolisher": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Leman Russ Eradicator": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Leman Russ Executioner": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Leman Russ Exterminator": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Leman Russ Punisher": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Leman Russ Vanquisher": {
           "tiers": [],
           "wargear": []
         },
@@ -913,9 +1029,12 @@
         }
       },
       "enhancements": {
-        "Bridgehead Strike": {
+        "Armoured Infantry": {
           "per Bombast field gun": 10,
           "per Krieg heavy flamer": 5,
+          "per Multi-melta": 5,
+          "per Lascannon": 5,
+          "per Plasma cannon": 5,
           "per Demolisher battle cannon": 15
         }
       }
@@ -962,11 +1081,23 @@
           "tiers": [],
           "wargear": []
         },
+        "Death Company Marines with Jump Packs": {
+          "tiers": [],
+          "wargear": []
+        },
         "Lemartes": {
           "tiers": [],
           "wargear": []
         },
+        "Sanguinary Guard": {
+          "tiers": [],
+          "wargear": []
+        },
         "Sanguinary Priest": {
+          "tiers": [],
+          "wargear": []
+        },
+        "The Sanguinor": {
           "tiers": [],
           "wargear": []
         },
@@ -1166,6 +1297,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Land Raider Redeemer": {
+          "tiers": [],
+          "wargear": []
+        },
         "Land Speeder": {
           "tiers": [],
           "wargear": []
@@ -1175,6 +1310,10 @@
           "wargear": []
         },
         "Librarian in Phobos Armour": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Librarian in Terminator Armour": {
           "tiers": [],
           "wargear": []
         },
@@ -1310,7 +1449,15 @@
     },
     "Chaos Daemons": {
       "datasheets": {
+        "Beasts of Nurgle": {
+          "tiers": [],
+          "wargear": []
+        },
         "Be’lakor": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Bloodcrushers": {
           "tiers": [],
           "wargear": []
         },
@@ -1338,6 +1485,14 @@
           "tiers": [],
           "wargear": []
         },
+        "Contorted Epitome": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Daemonettes": {
+          "tiers": [],
+          "wargear": []
+        },
         "Daemon Prince of Chaos": {
           "tiers": [],
           "wargear": []
@@ -1359,6 +1514,10 @@
           "wargear": []
         },
         "Feculent Gnarlmaw": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Fiends": {
           "tiers": [],
           "wargear": []
         },
@@ -1398,6 +1557,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Keeper of Secrets": {
+          "tiers": [],
+          "wargear": []
+        },
         "Lord of Change": {
           "tiers": [],
           "wargear": []
@@ -1418,11 +1581,23 @@
           "tiers": [],
           "wargear": []
         },
+        "Poxbringer": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Rendmaster on Blood Throne": {
+          "tiers": [],
+          "wargear": []
+        },
         "Rotigus": {
           "tiers": [],
           "wargear": []
         },
         "Screamers": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Seekers": {
           "tiers": [],
           "wargear": []
         },
@@ -1435,6 +1610,10 @@
           "wargear": []
         },
         "Skull Altar": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Skull Cannon": {
           "tiers": [],
           "wargear": []
         },
@@ -1499,7 +1678,15 @@
           "tiers": [],
           "wargear": []
         },
+        "Chaos Cerastus Knight Atrapos": {
+          "tiers": [],
+          "wargear": []
+        },
         "Chaos Cerastus Knight Castigator": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Chaos Cerastus Knight Lancer": {
           "tiers": [],
           "wargear": []
         },
@@ -1519,6 +1706,14 @@
           "tiers": [],
           "wargear": []
         },
+        "Knight Despoiler": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Knight Rampager": {
+          "tiers": [],
+          "wargear": []
+        },
         "Knight Ruinator": {
           "tiers": [],
           "wargear": []
@@ -1527,11 +1722,19 @@
           "tiers": [],
           "wargear": []
         },
+        "War Dog Brigand": {
+          "tiers": [],
+          "wargear": []
+        },
         "War Dog Executioner": {
           "tiers": [],
           "wargear": []
         },
         "War Dog Huntsman": {
+          "tiers": [],
+          "wargear": []
+        },
+        "War Dog Karnivore": {
           "tiers": [],
           "wargear": []
         },
@@ -1546,7 +1749,8 @@
       },
       "enhancements": {
         "Traitoris Lance": {
-          "per Despoiler gatling cannon": 25
+          "per Despoiler gatling cannon": 25,
+          "per Despoiler battle cannon": 10
         }
       }
     },
@@ -1625,6 +1829,10 @@
           "wargear": []
         },
         "Dark Commune": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Defiler": {
           "tiers": [],
           "wargear": []
         },
@@ -1819,6 +2027,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Ravenwing Black Knights": {
+          "tiers": [],
+          "wargear": []
+        },
         "Ravenwing Command Squad": {
           "tiers": [],
           "wargear": []
@@ -1828,6 +2040,10 @@
           "wargear": []
         },
         "Ravenwing Dark Talon": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Sammael": {
           "tiers": [],
           "wargear": []
         },
@@ -2027,6 +2243,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Land Raider Redeemer": {
+          "tiers": [],
+          "wargear": []
+        },
         "Land Speeder": {
           "tiers": [],
           "wargear": []
@@ -2036,6 +2256,10 @@
           "wargear": []
         },
         "Librarian in Phobos Armour": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Librarian in Terminator Armour": {
           "tiers": [],
           "wargear": []
         },
@@ -2175,6 +2399,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Blightlord Terminators": {
+          "tiers": [],
+          "wargear": []
+        },
         "Chaos Land Raider": {
           "tiers": [],
           "wargear": []
@@ -2207,11 +2435,19 @@
           "tiers": [],
           "wargear": []
         },
+        "Defiler": {
+          "tiers": [],
+          "wargear": []
+        },
         "Foetid Bloat-drone": {
           "tiers": [],
           "wargear": []
         },
         "Foetid Bloat-drone with Heavy Blight Launcher": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Foul Blightspawn": {
           "tiers": [],
           "wargear": []
         },
@@ -2240,6 +2476,22 @@
           "wargear": []
         },
         "Miasmic Malignifier": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Mortarion": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Myphitic Blight-haulers": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Noxious Blightbringer": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Plagueburst Crawler": {
           "tiers": [],
           "wargear": []
         },
@@ -2289,7 +2541,7 @@
         }
       },
       "enhancements": {
-        "Contagion Engines": {
+        "Death Lord’s Chosen": {
           "per Heavy reaper autocannon": 15,
           "per Hades lascannon": 15
         }
@@ -2409,6 +2661,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Centurion Devastator Squad": {
+          "tiers": [],
+          "wargear": []
+        },
         "Chaplain": {
           "tiers": [],
           "wargear": []
@@ -2525,6 +2781,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Land Raider Redeemer": {
+          "tiers": [],
+          "wargear": []
+        },
         "Land Speeder": {
           "tiers": [],
           "wargear": []
@@ -2534,6 +2794,10 @@
           "wargear": []
         },
         "Librarian in Phobos Armour": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Librarian in Terminator Armour": {
           "tiers": [],
           "wargear": []
         },
@@ -2780,6 +3044,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Defiler": {
+          "tiers": [],
+          "wargear": []
+        },
         "Flawless Blades": {
           "tiers": [],
           "wargear": []
@@ -2793,6 +3061,10 @@
           "wargear": []
         },
         "Infractors": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Lord Exultant": {
           "tiers": [],
           "wargear": []
         },
@@ -2817,6 +3089,22 @@
           "wargear": []
         },
         "Tormentors": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Daemonettes": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Fiends": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Keeper of Secrets": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Seekers": {
           "tiers": [],
           "wargear": []
         },
@@ -2995,7 +3283,19 @@
           "tiers": [],
           "wargear": []
         },
+        "Land Raider Redeemer": {
+          "tiers": [],
+          "wargear": []
+        },
         "Nemesis Dreadknight": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Paladin Squad": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Purgation Squad": {
           "tiers": [],
           "wargear": []
         },
@@ -3160,7 +3460,7 @@
         }
       },
       "enhancements": {
-        "Ordo Malleus, Daemon Hunters": {
+        "Ordo Hereticus, Purgation Force": {
           "per Psycannon": 5,
           "per Twin multi-melta": 15
         },
@@ -3281,7 +3581,19 @@
           "tiers": [],
           "wargear": []
         },
+        "Brôkhyr Thunderkyn": {
+          "tiers": [],
+          "wargear": []
+        },
         "Buri Aegnirssen": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Cthonian Beserks": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Cthonian Earthshakers": {
           "tiers": [],
           "wargear": []
         },
@@ -3297,6 +3609,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Hearthkyn Warriors": {
+          "tiers": [],
+          "wargear": []
+        },
         "Hekaton Land Fortress": {
           "tiers": [],
           "wargear": []
@@ -3309,11 +3625,23 @@
           "tiers": [],
           "wargear": []
         },
+        "Ironkin Steeljacks with Heavy Volkanite Disintegrators": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Ironkin Steeljacks with Melee Weapons": {
+          "tiers": [],
+          "wargear": []
+        },
         "Kâhl": {
           "tiers": [],
           "wargear": []
         },
         "Kapricus Carrier": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Kapricus Defenders": {
           "tiers": [],
           "wargear": []
         },
@@ -3434,11 +3762,27 @@
           "tiers": [],
           "wargear": []
         },
+        "Lokhust Destroyers": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Lokhust Heavy Destroyers": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Lokhust Lord": {
+          "tiers": [],
+          "wargear": []
+        },
         "Lychguard": {
           "tiers": [],
           "wargear": []
         },
         "Monolith": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Necron Warriors": {
           "tiers": [],
           "wargear": []
         },
@@ -3454,6 +3798,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Ophydian Destroyers": {
+          "tiers": [],
+          "wargear": []
+        },
         "Orikan the Diviner": {
           "tiers": [],
           "wargear": []
@@ -3463,6 +3811,10 @@
           "wargear": []
         },
         "Overlord with Translocation Shroud": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Plasmancer": {
           "tiers": [],
           "wargear": []
         },
@@ -3479,6 +3831,10 @@
           "wargear": []
         },
         "Skorpekh Destroyers": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Skorpekh Lord": {
           "tiers": [],
           "wargear": []
         },
@@ -3519,75 +3875,7 @@
     },
     "Orks": {
       "datasheets": {
-        "Bannernob": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Battlewagon": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Beastboss": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Beastboss on Squigosaur": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Beast Snagga Boyz": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Bigboss": {
-          "tiers": [],
-          "wargear": []
-        },
         "Big’ed Bossbunka": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Big Mek": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Big Mek Dakkarig": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Big Mek in Mega Armour": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Big Mek with Shokk Attack Gun": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Blitza-bommer": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Boomdakka Snazzwagon": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Boss Snikrot": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Boyz": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Breaka Boyz": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Burna-bommer": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Burna Boyz": {
           "tiers": [],
           "wargear": []
         },
@@ -3595,159 +3883,7 @@
           "tiers": [],
           "wargear": []
         },
-        "Deff Dread": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Deffkilla Wartrike": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Deffkoptas": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Flash Gitz": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Gargantuan Squiggoth": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Ghazghkull Thraka": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Gorkanaut": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Gretchin": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Hunta Rig": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Killa Kans": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Kill Rig": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Kommandos": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Kustom Boosta-blasta": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Lootas": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Meganobz": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Megatrakk Scrapjet": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Mek": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Mek Gunz": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Morkanaut": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Mozrog Skragbad": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Nobz": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Painboss": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Painboy": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Rukkatrukk Squigbuggy": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Shokkjump Dragsta": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Squighog Boyz": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Stompa": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Stormboyz": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Tankbustas": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Trukk": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Warbikers": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Warboss": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Warboss in Mega Armour": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Wartrakk": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Wazbom Blastajet": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Wazdakka Gutsmek": {
-          "tiers": [],
-          "wargear": []
-        },
         "Weirdboy": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Wurrboy": {
-          "tiers": [],
-          "wargear": []
-        },
-        "Zodgrod Wortsnagga": {
           "tiers": [],
           "wargear": []
         }
@@ -3825,6 +3961,10 @@
           "wargear": []
         },
         "Centurion Assault Squad": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Centurion Devastator Squad": {
           "tiers": [],
           "wargear": []
         },
@@ -3948,6 +4088,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Land Raider Redeemer": {
+          "tiers": [],
+          "wargear": []
+        },
         "Land Speeder": {
           "tiers": [],
           "wargear": []
@@ -3957,6 +4101,10 @@
           "wargear": []
         },
         "Librarian in Phobos Armour": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Librarian in Terminator Armour": {
           "tiers": [],
           "wargear": []
         },
@@ -4104,6 +4252,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Vulkan He’stan": {
+          "tiers": [],
+          "wargear": []
+        },
         "Aethon Shaan": {
           "tiers": [],
           "wargear": []
@@ -4154,7 +4306,7 @@
         }
       },
       "enhancements": {
-        "Armoured Speartip": {
+        "Anvil Siege Force": {
           "per Twin lascannon": 5,
           "per Macro plasma incinerator": 10,
           "per Heavy laser destroyer": 10,
@@ -4208,6 +4360,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Thunderwolf Cavalry": {
+          "tiers": [],
+          "wargear": []
+        },
         "Ulrik the Slayer": {
           "tiers": [],
           "wargear": []
@@ -4221,6 +4377,10 @@
           "wargear": []
         },
         "Wolf Guard Headtakers": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Wolf Guard Terminators": {
           "tiers": [],
           "wargear": []
         },
@@ -4428,6 +4588,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Land Raider Redeemer": {
+          "tiers": [],
+          "wargear": []
+        },
         "Land Speeder": {
           "tiers": [],
           "wargear": []
@@ -4437,6 +4601,10 @@
           "wargear": []
         },
         "Librarian in Phobos Armour": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Librarian in Terminator Armour": {
           "tiers": [],
           "wargear": []
         },
@@ -4558,7 +4726,7 @@
         }
       },
       "enhancements": {
-        "Armoured Speartip": {
+        "Anvil Siege Force": {
           "per Storm Shield": 5
         },
         "Veterans of the Fang": {
@@ -4632,6 +4800,10 @@
           "wargear": []
         },
         "Sternguard Veteran Squad": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Sword Brethren Squad": {
           "tiers": [],
           "wargear": []
         },
@@ -4815,6 +4987,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Land Raider Redeemer": {
+          "tiers": [],
+          "wargear": []
+        },
         "Land Speeder": {
           "tiers": [],
           "wargear": []
@@ -4971,6 +5147,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Crisis Starscythe Battlesuits": {
+          "tiers": [],
+          "wargear": []
+        },
         "Crisis Sunforge Battlesuits": {
           "tiers": [],
           "wargear": []
@@ -5079,6 +5259,10 @@
           "tiers": [],
           "wargear": []
         },
+        "The Twin Lance": {
+          "tiers": [],
+          "wargear": []
+        },
         "Tidewall Droneport": {
           "tiers": [],
           "wargear": []
@@ -5088,6 +5272,10 @@
           "wargear": []
         },
         "Tidewall Shieldline": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Tiger Shark": {
           "tiers": [],
           "wargear": []
         },
@@ -5144,6 +5332,14 @@
           "tiers": [],
           "wargear": []
         },
+        "Defiler": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Exalted Sorcerer": {
+          "tiers": [],
+          "wargear": []
+        },
         "Exalted Sorcerer on Disc of Tzeentch": {
           "tiers": [],
           "wargear": []
@@ -5157,6 +5353,10 @@
           "wargear": []
         },
         "Heldrake": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Infernal Master": {
           "tiers": [],
           "wargear": []
         },
@@ -5181,6 +5381,14 @@
           "wargear": []
         },
         "Sekhetar Robots": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Sorcerer": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Sorcerer in Terminator Armour": {
           "tiers": [],
           "wargear": []
         },
@@ -5255,6 +5463,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Exocrine": {
+          "tiers": [],
+          "wargear": []
+        },
         "Gargoyles": {
           "tiers": [],
           "wargear": []
@@ -5303,6 +5515,10 @@
           "tiers": [],
           "wargear": []
         },
+        "Maleceptor": {
+          "tiers": [],
+          "wargear": []
+        },
         "Mawloc": {
           "tiers": [],
           "wargear": []
@@ -5340,6 +5556,10 @@
           "wargear": []
         },
         "Psychophage": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Pyrovores": {
           "tiers": [],
           "wargear": []
         },
@@ -5403,6 +5623,14 @@
           "tiers": [],
           "wargear": []
         },
+        "Tyrannofex": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Tyrant Guard": {
+          "tiers": [],
+          "wargear": []
+        },
         "Venomthropes": {
           "tiers": [],
           "wargear": []
@@ -5416,6 +5644,10 @@
           "wargear": []
         },
         "Winged Tyranid Prime": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Zoanthropes": {
           "tiers": [],
           "wargear": []
         }
@@ -5498,6 +5730,10 @@
           "wargear": []
         },
         "Khârn the Betrayer": {
+          "tiers": [],
+          "wargear": []
+        },
+        "Khorne Berzerkers": {
           "tiers": [],
           "wargear": []
         },
