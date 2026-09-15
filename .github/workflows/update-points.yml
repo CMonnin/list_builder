@@ -3,7 +3,7 @@ name: Update Points Data
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 8 * * 1"
+
 
 permissions:
   contents: write
